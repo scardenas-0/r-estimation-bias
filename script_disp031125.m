@@ -216,8 +216,8 @@ exportgraphics(gcf, 'Figures/040519_ORx.pdf')
 % with observations of measles
 
 %d1 = load('Data/010919_msls_model');
-d1 = load('Data/043025_msls_model');
-d2 = load('Data/043025_msls_perf');
+d1 = load('Data/061925_msls_02_model');
+d2 = load('Data/061925_msls_02_perf');
 R_inf = squeeze(d1.rs_inf_res)';
 
 figure(1),clf
@@ -267,12 +267,12 @@ title({'P_{s\rightarrow s}'})
 %
 % Based on this, we'll assume the baseline R is based on a uniform
 % seropositivity of 95.9
-% **updated to be 91.6%
+% **updated to be 95%
 %
 % R0 = R_inf/.041;
 % Assumign 100% of vaccination leads to seroprevalene, critical decrease in vaccination satisfies
-% 1 = (.041+x)*R0 = (1 + x/.041)*R_inf
-% Thus x = .041(1/R_inf -1)*100
+% 1 = (.05+x)*R0 = (1 + x/.041)*R_inf
+% Thus x = .05(1/R_inf -1)*100
 
 % R effective
 %subplot (3,2,5)
@@ -288,7 +288,7 @@ text(1.25,0.15,0,'Primary cases per cluster (R_p)','FontSize', 16)
 %subplot (3,2,6)
 subplot (2,2,4)
 % contour(d1.rp_arr,d1.p_obs_arr,4.1*(1./R_inf -1),[1.1, 1.2, 1.4, 1.6, 1.8, 2],'ShowText','On','LineWidth',2)
-contour(d1.rp_arr,d1.p_obs_arr,8.4*(1./R_inf -1),[3, 4, 5, 6, 7, 8, 9, 10, 11],'ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,5*(1./R_inf -1),[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5],'ShowText','On','LineWidth',2)
 set(gca,'FontSize',12)
 title({'Absolute decrease in vaccination percentage','leading to critical transmission threshold'})
 %ylabel({'Observation_ ','probability (P_{obs})'})
@@ -308,7 +308,7 @@ title({'Absolute decrease in vaccination percentage','leading to critical transm
 % ylim([.7 1])
 
 % savepdf('Figures/040519_msls_app')
-exportgraphics(gcf, 'Figures/052125_msls_34_app.pdf')
+exportgraphics(gcf, 'Figures/061925_msls_02_app.pdf')
 
 %%
 % Figure look at R and OR for MPX in 80s
