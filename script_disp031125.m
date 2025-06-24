@@ -277,7 +277,7 @@ title({'P_{s\rightarrow s}'})
 % R effective
 %subplot (3,2,5)
 subplot (2,2,3)
-contour(d1.rp_arr,d1.p_obs_arr,R_inf,'ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,R_inf,[0.75, 0.8],'ShowText','On','LineWidth',2)
 set(gca,'FontSize',12)
 title({'Effective reproduction number'})
 %ylabel({'Observation_ ','probability (P_{obs})'})
