@@ -5,6 +5,7 @@ function res_arr = OR_performance( ...
     )
 [C_pp C_ps C_sp C_ss]
 % 84/248, 85/248, 74/248, 5/248
+% 13.57375853/241, 48.42624147/241, 12.42624147/241, 166.57375853/241
 
 %[p_obs C_pp C_ps C_sp C_ss X_pn X_pp X_sn X_sp]
 Q_pn = p_obs * (X_sn*C_sp - X_pn*C_ss)/(C_ps*C_sp - C_pp*C_ss);

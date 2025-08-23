@@ -109,7 +109,7 @@ save('Data/061925_msls_02_perf')
 % Nipah virus 2001-2014
 % Primary infection: Male 84 Female 85
 % Secondary infection: Male 74 Female 5
-%{
+
 clear;
 % k_mpx = 0.3
 k_nipah = 0.3
@@ -152,87 +152,7 @@ for pp = 1:rp_num
 end
 
 save('Data/050125_nipah_OR')
-%}
+
 
 %%
-% Measles OR calculation: age (< or > 19) and primary/secondary case
-% 2020-2023
-
-clear;
-k_msls = 0.3;
-Compat_arr = compatible_par_inf( ...
-    800, ...
-    62/241, ...
-    1:.025:1.1, ...
-    k_msls, ...
-    0.25:.025:1, ...
-    'Data/082225_msls_r' ...
-    );
-%%
-% mpx part 2
-
-clear;
-d_msls = load('Data/082225_msls_r')
-
-rp_num = length(d_msls.rp_arr);
-po_num = length(d_msls.p_obs_arr);
-res_arr = zeros(rp_num,po_num,13);
-k_msls = 0.3;
-for pp = 1:rp_num
-    for oo = 1:po_num
-        [pp rp_num oo po_num]
-        res_arr(pp,oo,1:9) = classifier_performance( ...
-            800, d_msls.rp_arr(pp), d_msls.rs_inf_res(pp,oo), k_msls, d_msls.p_obs_arr(oo) ...
-            );
-        % Treating <19 as 'positive'
-        res_arr(pp,oo,10:13) = OR_performance( ...
-            d_msls.p_obs_arr(oo), ...
-            res_arr(pp,oo,1), res_arr(pp,oo,2), res_arr(pp,oo,3), res_arr(pp,oo,4), ...
-            13.57375853/241, 48.42624147/241, 12.42624147/241, 166.57375853/241 ...
-            );
-        % res_arr(pp,oo,13)
-    end
-end
-
-save('Data/082225_msls_OR')
-
-%%
-% mpox updating new numbers
-clear;
-k_mpox = 0.3;
-Compat_arr = compatible_par_inf( ...
-    800, ...
-    62/241, ...
-    1:.025:1.1, ...
-    k_mpox, ...
-    0.25:.025:1, ...
-    'Data/082225_mpox_r' ...
-    );
-%%
-% mpx part 2
-
-clear;
-d_mpox = load('Data/082225_mpox_r')
-
-rp_num = length(d_mpox.rp_arr);
-po_num = length(d_mpox.p_obs_arr);
-res_arr = zeros(rp_num,po_num,13);
-k_mpox = 0.3;
-for pp = 1:rp_num
-    for oo = 1:po_num
-        [pp rp_num oo po_num]
-        res_arr(pp,oo,1:9) = classifier_performance( ...
-            800, d_mpox.rp_arr(pp), d_mpox.rs_inf_res(pp,oo), k_mpox, d_mpox.p_obs_arr(oo) ...
-            );
-        % Treating <19 as 'positive'
-        res_arr(pp,oo,10:13) = OR_performance( ...
-            d_mpox.p_obs_arr(oo), ...
-            res_arr(pp,oo,1), res_arr(pp,oo,2), res_arr(pp,oo,3), res_arr(pp,oo,4), ...
-            13.57375853/241, 48.42624147/241, 12.42624147/241, 166.57375853/241 ...
-            );
-        % res_arr(pp,oo,13)
-    end
-end
-
-save('Data/082225_mpox_OR')
-
+% Measles OR calculation: probability of a case >19 of being a primary cas
