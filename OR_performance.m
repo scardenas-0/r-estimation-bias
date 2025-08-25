@@ -3,7 +3,7 @@ function res_arr = OR_performance( ...
     C_pp, C_ps, C_sp, C_ss, ...
     X_pn, X_pp, X_sn, X_sp ...
     )
-[C_pp C_ps C_sp C_ss]
+% [C_pp C_ps C_sp C_ss]
 % 84/248, 85/248, 74/248, 5/248
 % 13.57375853/241, 48.42624147/241, 12.42624147/241, 166.57375853/241
 
@@ -16,5 +16,5 @@ Q_sp = p_obs * (X_sp - X_pp*C_ps/C_pp)/(C_ss - C_sp*C_ps/C_pp); % this one is ne
 % Q_sp_int_2 = X_pp*C_ps/C_pp;
 % Q_sp_int_1
 % Q_sp_int_2
-Q_sp
+% Q_sp
 res_arr = [Q_pn Q_pp Q_sn Q_sp];
