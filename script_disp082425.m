@@ -125,23 +125,23 @@ title({'Probability that a case_ ','classified as a secondary case_ ', 'is a sec
 %ylabel({'Observation_ ','probability (P_{obs})'})
 %xlabel({'              Primary cases per cluster (R_p)'})
 
-% Inferred proportion positive among primary
+% Inferred proportion primary among positive
 % res_arr(:,:,10:13) = [Q_pn Q_pp Q_sn Q_sp];
 subplot (3,2,3)
-temp = d2.res_arr(:,:,11)./(d2.res_arr(:,:,10) + d2.res_arr(:,:,11));
-contour(d1.rp_arr,d1.p_obs_arr,temp', [0.5, 1, 1.5],'ShowText','On','LineWidth',2)
+temp = d2.res_arr(:,:,11)./(d2.res_arr(:,:,13) + d2.res_arr(:,:,11));
+contour(d1.rp_arr,d1.p_obs_arr,temp','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
-title({'Inferred proportion of','primary cases that are positive'})
+title({'Inferred proportion of','positive cases that are primary'})
 ylabel({'Observation probability (P_{obs})'},'FontSize',16)
 %xlabel({'              Primary cases per cluster (R_p)'})
 
-% Inferred proportion positive among secondary
+% Inferred proportion primary among negative
 % res_arr(:,:,10:13) = [Q_pn Q_pp Q_sn Q_sp];
 subplot (3,2,4)
-temp = d2.res_arr(:,:,13)./(d2.res_arr(:,:,12) + d2.res_arr(:,:,13));
+temp = d2.res_arr(:,:,10)./(d2.res_arr(:,:,12) + d2.res_arr(:,:,10));
 contour(d1.rp_arr,d1.p_obs_arr,temp','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
-title({'Inferred proportion of','secondary cases that are positive'})
+title({'Inferred proportion of','negative cases that are primary'})
 %ylabel({'Observation_ ','probability (P_{obs})'})
 %xlabel({'              Primary cases per cluster (R_p)'})
 
@@ -156,14 +156,14 @@ title({'Effective reproduction number'})
 % Inferred odds ratio
 % res_arr(:,:,10:13) = [Q_pn Q_pp Q_sn Q_sp];
 subplot (3,2,6)
-temp = d2.res_arr(:,:,10).*d2.res_arr(:,:,13)./(d2.res_arr(:,:,11) .* d2.res_arr(:,:,12));
+temp = d2.res_arr(:,:,11).*d2.res_arr(:,:,12)./(d2.res_arr(:,:,10) .* d2.res_arr(:,:,13));
 % bounds(temp)
 % abs(temp) used because of some convergence difficulties yielding large negative
 % values of OR for high p_obs and r_p
 % contour(d1.rp_arr,d1.p_obs_arr,abs(temp)',[0.01 0.02 0.03 0.04 0.05 0.06],'ShowText','On','LineWidth',2)
-contour(d1.rp_arr,d1.p_obs_arr,temp', [0.1, 0.5, 1, 2, 3, 4, 5],'ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,temp','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
-title({'Inferred odds ratio for','secondary cases being positive'})
+title({'Inferred odds ratio for','positive cases being primary'})
 %ylabel({'Observation_ ','probability (P_{obs})'})
 %xlabel('Primaries per cluster (R_p)')
 text(.85,0.07,0,'Primary cases per cluster (R_p)','FontSize', 11)
@@ -244,14 +244,14 @@ title({'Effective reproduction number'})
 % Inferred odds ratio
 % res_arr(:,:,10:13) = [Q_pn Q_pp Q_sn Q_sp];
 subplot (3,2,6)
-temp = d2.res_arr(:,:,10).*d2.res_arr(:,:,13)./(d2.res_arr(:,:,11) .* d2.res_arr(:,:,12));
+temp = d2.res_arr(:,:,11).*d2.res_arr(:,:,12)./(d2.res_arr(:,:,10) .* d2.res_arr(:,:,13));
 % bounds(temp)
 % abs(temp) used because of some convergence difficulties yielding large negative
 % values of OR for high p_obs and r_p
 % contour(d1.rp_arr,d1.p_obs_arr,abs(temp)',[0.01 0.02 0.03 0.04 0.05 0.06],'ShowText','On','LineWidth',2)
 contour(d1.rp_arr,d1.p_obs_arr,temp','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
-title({'Inferred odds ratio for','secondary cases being positive'})
+title({'Inferred odds ratio for','primary cases being positive'})
 %ylabel({'Observation_ ','probability (P_{obs})'})
 %xlabel('Primaries per cluster (R_p)')
 text(.85,0.07,0,'Primary cases per cluster (R_p)','FontSize', 11)
