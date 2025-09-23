@@ -6,166 +6,555 @@ library(shinydashboard)
 library(deSolve)
 
 # Define UI for application that draws a histogram
-ui <- navbarPage(theme = bslib::bs_theme(bootswatch = "flatly"),
-                 title = "Misclassification Model",
-                 #To use shinydashboard functions with a navbarpage layout
-                 header = tagList(
-                   useShinydashboard(),
-                   withMathJax()
-                 ),
-                 tabPanel("Model Assumptions",
-                          h5(strong("Transmission Model Assumptions")),
-                          h6("1) number of primary cases occurring in each infection cluster is modelled as a geometric distribution with mean \\(R_p\\)"),
-                          h6("2) each primary case generates secondary cases according to a negative binomial distribution with mean \\(R_s\\)), and dispersion parameter \\(K_s\\)"),
-                          h6("3) Each secondary cases, continues to generate later-generation secondary cases with the same \\(R_s\\) and \\(K_s\\) parameters."),
-                          br(),
-                          h5(strong("Surveillance Model Assumptions")),
-                          h6("1) number of primary cases occurring in each infection cluster is modelled as a geometric distribution with mean \\(R_p\\)"),
-                          h6("2) each primary case generates secondary cases according to a negative binomial distribution with mean \\(R_s\\)), and dispersion parameter \\(K_s\\)"),
-                          h6("3) Each secondary cases, continues to generate later-generation secondary cases with the same \\(R_s\\) and \\(K_s\\) parameters."),
-                          
-                          br(),
-                 ),
-                 tabPanel("Primary Cases",
-                          h2("Primary Case Classification"),
-                          br(),
-                          
-                          fluidRow(
-                            column(2, offset=0.75, 
-                                   sliderInput("NumPrimaryCasesCluster",
-                                               label=div(style="text-align:center",
-                                                         "Number of Primary Cases in a Cluster (\\(R_p\\))"),
-                                               min = 1,
-                                               max = 2,
-                                               value = 1.5,
-                                               step = 0.2)),
-                            column(2, offset=0.75,
-                                   sliderInput("PObs",
-                                               label=div(style="text-align:center",
-                                                         "Independent Probability of Observing Each Infection(\\(P_{obs}\\))"),
-                                               min=0,
-                                               max=1,
-                                               value=0.5,
-                                               step = 0.1)),
-                          ),
-                          br(),
-                          p(strong("Model Focus:"), "Our focus is on ‘weak’ or ‘subcritical’ transmission, which we define as occurring when the effective reproduction number, 
-                          (\\(R_s\\)), is <1, meaning sustained transmission is not possible. stochastic and often sporadic nature of subcritical transmission, high-quality
-                          surveillance data is often challenging to obtain. Case misclassification may result from unobserved cases, or from transmission chain entanglement", style = "font-size:12px"),
-                          
-                          mainPanel((fluidRow(                              
-                            column(3, valueBoxOutput("Cp_p", width=NULL)),
-                            column(3, valueBoxOutput("Cp_s", width=NULL)),
-                            column(3, valueBoxOutput("Cp_o", width=NULL)))
-                          ),
-                          )
-                 ),
-                 
-                 
-                 
-                 tabPanel("Secondary Cases",
-                          h2("Secondary Case Classification"),
-                          h5("Introduction of disease may not lead to an outbreak depending on the stochasticity of transmission.
-                             We refer to the probability that an outbreak does not occur as the probability of self-limited spread, (\\(P_{e}\\))."),
-                          h5(strong("Select values on the sliders below to see the impact of these variables on the probability of secondary case classification.")),
-                          uiOutput("warning_text2"),
-                          br(),
-                          fluidRow(
-                            column(2, offset=0.75, 
-                                   sliderInput("R",
-                                               label=div(style="text-align:center",
-                                                         "Reproductive number (R)"),
-                                               min = 0.1,
-                                               max = 10,
-                                               value = 2.5,
-                                               step = 0.5)),
-                            column(2, offset=0.75,
-                                   shinyWidgets::sliderTextInput('k', 
-                                                                 label=div(style="text-align:center",
-                                                                           'Dispersion parameter (k)'),
-                                                                 choices=c(0.1, 0.2, 0.5, 5),
-                                                                 selected=0.2, grid=T)),
-                            column(2, offset=0.75,
-                                   sliderInput("Cth",
-                                               label=div(style="text-align:center",
-                                                         "Outbreak size threshold (\\(C_{th}\\))*"),
-                                               min = 1,
-                                               max = 20,
-                                               value = 2.5)),
-                            column(2, offset=0.75,
-                                   sliderInput("Z",
-                                               label=div(style="text-align:center",
-                                                         "Number of disease introductions (\\(\\zeta\\))**"),
-                                               min=1,
-                                               max=5,
-                                               value=1))),
-                          
-                          br(),
-                          fluidRow(
-                            column(5, uiOutput('pe_box', width=3)),
-                            column(5, uiOutput('pe_box_outbreak',width=3))),
-                 ),
+ui <- navbarPage(
+  theme = bslib::bs_theme(bootswatch = "flatly"),
+  title = "Misclassification Model",
+  #To use shinydashboard functions with a navbarpage layout
+  header = tagList(
+    useShinydashboard(),
+    withMathJax()
+  ),
+  tabPanel(
+    "Model Assumptions",
+    h5(strong("Transmission Model Assumptions")),
+    h6("1) Each primary case generates secondary cases according to a negative binomial distribution with mean \\(R_s\\), and dispersion parameter \\(K_s\\)."),
+    h6("2) Each secondary case continues to generate later-generation secondary cases with the same \\(R_s\\) and \\(K_s\\) parameters."),
+    h6("3) A 'true' chain consists of all cases that can be directly linked to a true primary case."),
+    h6("4) If one or more of these chains occur in overlapping time and space, they become entangled and form a 'true cluster'."),
+    h6("5) The number of true primary cases in each cluster is modelled as a geometric distribution with mean \\(R_p\\)."),
+    br(),
+    h5(strong("Surveillance Model Assumptions")),
+    h6("1) Each infection is observed with independent probability \\(p_{obs}\\)"),
+    h6("2) The surveillance system observes a cluster (a 'reported cluster') and assigns one case as primary and all others as secondary."),
+    h6("3) True chains do not span multiple reported clusters."),
+    br(),
+  ),
+  tabPanel(
+    "Primary Cases",
+    h2("Primary Case Classification"),
+    br(),
+    fluidRow(
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "NumPrimaryCasesCluster",
+          label=div(style="text-align:center",
+                    "Number of primary cases per cluster (\\(R_p\\))"),
+          min = 1,
+          max = 2,
+          value = 1.5,
+          step = 0.2
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "PObs",
+          label=div(style="text-align:center",
+                    "Probability of observing each case (\\(P_{obs}\\))"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      ),
+    ),
+    br(),
+    p(strong("Model Focus:"), "Our focus is on ‘weak’ or ‘subcritical’ transmission, which we define as occurring when the effective reproduction number, 
+    (\\(R_s\\)), is <1, meaning sustained transmission is not possible. Due to the stochastic and sporadic nature of subcritical transmission, high-quality
+    surveillance data is often challenging to obtain. Case misclassification may result from unobserved cases, or from transmission chain entanglement", style = "font-size:12px"),
+    h3("Classifier probabilities:"),
+    mainPanel(
+      (
+        fluidRow(
+          column(3, uiOutput("Cp_p", width = 3)),
+          column(3, uiOutput("Cp_s", width = 3)),
+          column(3, uiOutput("Cp_o", width = 3))
+        )
+      ),
+    )
+  ),
+  tabPanel(
+    "Secondary Cases",
+    h2("Secondary Case Classification"),
+    h5(strong("Select values on the sliders below to see the impact of these variables on the probability of secondary case classification.")),
+    br(),
+    fluidRow(
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "Rp",
+          label=div(style="text-align:center",
+                    "Number of primary cases per cluster (\\(R_p\\))"),
+          min = 1,
+          max = 2,
+          value = 1.5,
+          step = 0.2
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "Rs",
+          label=div(style="text-align:center",
+                    "Reproductive number (\\(R_s\\))"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      )
+      ),
+    fluidRow(
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "ks",
+          label=div(style="text-align:center",
+                    "Dispersion (\\(k_s\\))"),
+          min = 0,
+          max = 2,
+          value = 1.5,
+          step = 0.1
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "PObs",
+          label=div(style="text-align:center",
+                    "Probability of observing each case (\\(P_{obs}\\))"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      ),
+      
+      br(),
+      h3("Classifier probabilities:"),
+      fluidRow(
+        column(3, uiOutput("Cs_p", width = 3)),
+        column(3, uiOutput("Cs_s", width = 3)),
+        column(3, uiOutput("Cs_o", width = 3))
+      )
+    ),
+  ),
+  tabPanel(
+    "Case classification",
+    h2("Case classifier performance"),
+    h5(strong("Select values on the sliders below to see the impact of these variables on the performance of case classification.")),
+    # uiOutput("warning_text2"),
+    br(),
+    fluidRow(
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "Rp",
+          label=div(style="text-align:center",
+                    "Number of primary cases per cluster (\\(R_p\\))"),
+          min = 1,
+          max = 2,
+          value = 1.5,
+          step = 0.2
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "Rs",
+          label=div(style="text-align:center",
+                    "Reproductive number (\\(R_s\\))"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "ks",
+          label=div(style="text-align:center",
+                    "Dispersion (\\(k_s\\))"),
+          min = 0,
+          max = 2,
+          value = 1.5,
+          step = 0.1
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "PObs",
+          label=div(style="text-align:center",
+                    "Probability of observing each case (\\(P_{obs}\\))"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      ),
+      
+      br(),
+      h3("Classification probabilities:"),
+      fluidRow(
+        column(3, uiOutput("Pp_p", width = 3)),
+        column(3, uiOutput("Ps_s", width = 3))
+        ),
+      fluidRow(
+        column(6, uiOutput("theta", width = 6))
+      )
+    ),
+  ),
+  tabPanel(
+    "Rs bias",
+    h2("Bias in Rs inference"),
+    h5(strong("Select values on the sliders below to see the impact of these variables on the performance of R estimation.")),
+    # uiOutput("warning_text2"),
+    br(),
+    fluidRow(
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "Rp",
+          label=div(style="text-align:center",
+                    "Number of primary cases per cluster (\\(R_p\\))"),
+          min = 1,
+          max = 2,
+          value = 1.5,
+          step = 0.2
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "Rs",
+          label=div(style="text-align:center",
+                    "Reproductive number (\\(R_s\\))"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "ks",
+          label=div(style="text-align:center",
+                    "Dispersion (\\(k_s\\))"),
+          min = 0,
+          max = 2,
+          value = 1.5,
+          step = 0.1
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "PObs",
+          label=div(style="text-align:center",
+                    "Probability of observing each case (\\(P_{obs}\\))"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      ),
+      
+      br(),
+      fluidRow(
+        column(4, uiOutput("Robs", width = 4)),
+        column(4, uiOutput("delta", width = 4))
+      )
+    ),
+  ),
+  tabPanel(
+    "Odds ratio",
+    h2("Bias in observed odds ratio"),
+    h5(strong("Select values on the sliders below to see the impact of these variables on the performance of trait classification.")),
+    # uiOutput("warning_text2"),
+    br(),
+    fluidRow(
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "Rp",
+          label=div(style="text-align:center",
+                    "Number of primary cases per cluster (\\(R_p\\))"),
+          min = 1,
+          max = 2,
+          value = 1.5,
+          step = 0.2
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "Rs",
+          label=div(style="text-align:center",
+                    "Reproductive number (\\(R_s\\))"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "ks",
+          label=div(style="text-align:center",
+                    "Dispersion (\\(k_s\\))"),
+          min = 0,
+          max = 2,
+          value = 1.5,
+          step = 0.1
+        )
+      )
+    ),
+      fluidRow(
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "PObs",
+          label=div(style="text-align:center",
+                    "Probability of observing each case (\\(P_{obs}\\))"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "Ip",
+          label = div(style = "text-align:center",
+                      "Fraction of primary cases that are trait positive"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "Is",
+          label = div(style = "text-align:center",
+                      "Fraction of secondary cases that are trait positive"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      ),
+      
+      br(),
+      fluidRow(
+        column(3, uiOutput("Qprime_pp", width = 3)),
+        column(3, uiOutput("Qprime_sp", width = 3)),
+        column(3, uiOutput("OR", width = 3))
+      )
+    ),
+  )
 )
-
 
 
 # Define server logic required to draw a histogram
 server <- function(input, output)  {
+  Cp_p_eval <- reactive({
+    input$PObs / (1 - input$PObs + input$PObs * input$NumPrimaryCasesCluster)
+  })
+  Cp_s_eval <- reactive({
+    input$PObs - Cp_p_eval()
+  })
   output$Cp_p <- renderValueBox({
     valueBox(
-      value = paste0(round(input$numsusceptibles*input$avgcontacts, digits=2)),
-      "Classifier Probability: True primary classified as true primary",
+      value = paste0(round(Cp_p_eval(), digits=2)),
+      "True primary classified as true primary",
       color = "green")
   })
   output$Cp_s <- renderValueBox({
     valueBox(
-      value = paste0(round(input$disprev*input$probinfection, digits=2)),
-      "Classifier Probability: True primary classified as secondary",
+      value = paste0(round(Cp_s_eval(), digits=2)),
+      "True primary classified as secondary",
       color = "purple")
   })
   output$Cp_o <- renderValueBox({
     valueBox(
-      value = paste0(round(input$numsusceptibles*input$avgcontacts*input$disprev*input$probinfection, digits=2)),
-      "Classifier Probability: True primary is unobserved",
+      value = paste0(round(1 - input$PObs, digits=2)),
+      "True primary is unobserved",
       color="light-blue")
   })
   
-  clust_size <- reactive({
-    input$Z:input$Cth
+  lx_y <- function(x, y, ks, Rs) {
+    exp(
+      lgamma(y + ks*x) - 
+        lgamma(y + 1) - 
+        lgamma(ks*x) + 
+        ks * x * log(ks/(Rs + ks)) + 
+        y * log(Rs/(Rs + ks))
+    )
+  }
+  l_i_n_c <- function(i, n, ks, Rs) {
+    (i / n) * lx_y(n, n-i, ks, Rs)
+  }
+  p_i <- function(i, R_p) {
+    ((R_p - 1)/R_p) ^ (i - 1) / R_p
+  }
+  
+  Cs_p_fn <- function(Rp, Rs, pobs, ks, jmax = 200, nmax = 200) {
+    n_vals <- 2:max(nmax, jmax)
+    i_vals <- 1:(jmax - 1)
+    
+    l_mat <- outer(i_vals, n_vals, Vectorize(function(i, n) l_i_n_c(i, n, ks, Rs)))
+    
+    p_vec <- p_i(i_vals, Rp)
+    mat <- sweep(l_mat, 1, p_vec, `*`)
+    
+    cs_n <- apply(mat, 1, function(row) rev(cumsum(rev(row))))
+    cs_n <- t(cs_n)
+    
+    rj_vals <- sapply(2:jmax, function(j) {
+      i_range <- 1:(j - 1)
+      n_index <- j - min(n_vals) + 1
+      sum(cs_n[i_range, n_index]) * (1 - Rs) / (Rp * Rs)
+    })
+    
+    j_vals <- 2:jmax
+    sum(rj_vals * pobs * (1 - pobs) ^ (j_vals - 1))
+  }
+  Cs_p_eval <- reactive({
+    Cs_p_fn(input$Rp, input$Rs, input$PObs, input$ks, 200)
+  })
+  Cs_s_eval <- reactive({
+    input$PObs - Cs_p_eval()
+  })
+  output$Cs_p <- renderValueBox({
+    valueBox(
+      value = paste0(round(Cs_p_eval(), digits=2)),
+      "True secondary classified as true primary",
+      color = "green")
+  })
+  output$Cs_s <- renderValueBox({
+    valueBox(
+      value = paste0(round(Cs_s_eval(), digits=2)),
+      "True secondary classified as secondary",
+      color = "purple")
+  })
+  output$Cs_o <- renderValueBox({
+    valueBox(
+      value = paste0(round(1 - input$PObs, digits=2)),
+      "True secondary is unobserved",
+      color="light-blue")
+  })
+  Pp_p_eval <- reactive({
+    Cp_p_eval() * (1 - input$Rs)/(Cp_p_eval() * (1 - input$Rs) + Cs_p_eval() * input$Rs)
+  })
+  Ps_s_eval <- reactive({
+    Cs_s_eval() * input$Rs / (Cs_s_eval() * input$Rs + Cp_s_eval() * (1 - input$Rs))
+  })
+  theta_eval <- reactive({
+    (Cs_s_eval() * input$Rs + Cp_p_eval() * (1 - input$Rs)) / input$PObs
+  })
+  output$Pp_p <- renderValueBox({
+    valueBox(
+      value = paste0(round(Pp_p_eval(), digits = 2)),
+      "Probability that a primary classification is a true primary case",
+      color = "green"
+    )
+  })
+  output$Ps_s <- renderValueBox({
+    valueBox(
+      value = paste0(round(Ps_s_eval(), digits = 2)),
+      "Probability that a secondary classification is a true secondary case",
+      color = "purple"
+    )
+  })
+  output$theta <- renderValueBox({
+    valueBox(
+      value = paste0(round(theta_eval(), digits = 2)),
+      "Accuracy that an observed case has the correct primary vs secondary assignment",
+      color = "light-blue"
+    )
+  })
+  Robs_eval <- reactive({
+    (Cp_s_eval() * (1 - input$Rs) + input$Rs * Cs_s_eval()) / input$PObs
+  })
+  delta_eval <- reactive({
+    Robs_eval() - input$Rs
+  })
+  output$Robs <- renderValueBox({
+    valueBox(
+      value = paste0(round(Robs_eval(), digits = 2)),
+      "Observed reproduction number",
+      color = "green"
+    )
+  })
+  output$delta <- renderValueBox({
+    valueBox(
+      value = paste0(round(delta_eval(), digits = 2)),
+      "Bias of R estimate",
+      color = "purple"
+    )
+  })
+  Qpm_eval <- reactive({
+    (1 - input$Rs) * (1 - input$Ip)
+  })
+  Qpp_eval <- reactive({
+    (1 - input$Rs) * input$Ip
+  })
+  Qsm_eval <- reactive({
+    input$Rs * (1 - input$Is)
+  })
+  Qsp_eval <- reactive({
+    input$Rs * input$Is
+  })
+  Qprime_pm_eval <- reactive({
+    (Qpm_eval() * Cp_p_eval() + Qsm_eval() * Cs_p_eval()) / input$PObs
+  })
+  Qprime_pp_eval <- reactive({
+    (Qpp_eval() * Cp_p_eval() + Qsp_eval() * Cs_p_eval()) / input$PObs
+  })
+  Qprime_sm_eval <- reactive({
+    (Qpm_eval() * Cp_s_eval() + Qsm_eval() * Cs_s_eval()) / input$PObs
+  })
+  Qprime_sp_eval <- reactive({
+    (Qpp_eval() * Cp_s_eval() + Qsp_eval() * Cs_s_eval()) / input$PObs
+  })
+  OR_eval <- reactive({
+    Qprime_pp_eval() * Qprime_sm_eval() / (Qprime_pm_eval() * Qprime_sp_eval())
+  })
+  output$Qprime_pp <- renderValueBox({
+    valueBox(
+      value = paste0(round(Qprime_pp_eval(), digits = 2)),
+      "Probability that a randomly observed case is primary and trait positive",
+      color = "green"
+    )
+  })
+  output$Qprime_sp <- renderValueBox({
+    valueBox(
+      value = paste0(round(Qprime_sp_eval(), digits = 2)),
+      "Probability that a randomly observed case is secondary and trait positive",
+      color = "purple"
+    )
+  })
+  output$OR <- renderValueBox({
+    valueBox(
+      value = paste0(round(OR_eval(), digits = 2)),
+      "Observed odds ratio that a trait positive case is primary",
+      color = "light-blue"
+    )
   })
   
-  log_s_ij_arr <- reactive({
-    exp(lgamma((clust_size()-input$Z)+input$k*clust_size()) - lgamma((clust_size()-input$Z)+1) - lgamma(input$k*clust_size()) +
-          input$k * clust_size() * log(input$k/(input$R+input$k)) +
-          (clust_size()-input$Z) * log(input$R/(input$R+input$k)))
-  })
-  
-  s_ij_arr <- reactive({
-    log_s_ij_arr()/clust_size()*input$Z
-  })
-  pe <- reactive({
-    sum(s_ij_arr())*100
-  })
-  
-  pe_outbreak <- reactive({
-    100-pe()  
-  })
-  
-  output$pe_box <- renderValueBox({
-    valueBox(value=paste0(signif(pe(),digits=4),"%"),
-             "Probability of self-limited spread",
-             icon=icon("times"),
-             color="green",
-             width=3)
-  })
-  
-  output$pe_box_outbreak <- renderValueBox({
-    valueBox(value=paste0(signif(pe_outbreak(),digits=4),"%"),
-             "Probability of outbreak occurring",
-             icon=icon("check"),
-             color="red",
-             width=3)
-  })
+  ##
   
   SEIR_equations <- function(time, variables, parameters) {
     with(as.list(c(variables, parameters)), {
