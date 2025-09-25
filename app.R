@@ -57,21 +57,22 @@ ui <- navbarPage(
           value = 0.5,
           step = 0.1
         )
-      ),
+      )
     ),
+    
     br(),
     p(strong("Model Focus:"), "Our focus is on ‘weak’ or ‘subcritical’ transmission, which we define as occurring when the effective reproduction number, 
     (\\(R_s\\)), is <1, meaning sustained transmission is not possible. Due to the stochastic and sporadic nature of subcritical transmission, high-quality
     surveillance data is often challenging to obtain. Case misclassification may result from unobserved cases, or from transmission chain entanglement", style = "font-size:12px"),
     h3("Classifier probabilities:"),
-    mainPanel(
-      (
-        fluidRow(
-          column(3, uiOutput("Cp_p", width = 3)),
-          column(3, uiOutput("Cp_s", width = 3)),
-          column(3, uiOutput("Cp_o", width = 3))
-        )
-      ),
+    fluidRow(
+      column(9, actionButton("go", "Run calculations"))
+    ),
+    br(),
+    fluidRow(
+      column(3, uiOutput("Cp_p", width = 3)),
+      column(3, uiOutput("Cp_s", width = 3)),
+      column(3, uiOutput("Cp_o", width = 3))
     )
   ),
   tabPanel(
@@ -104,7 +105,7 @@ ui <- navbarPage(
           step = 0.1
         )
       )
-      ),
+    ),
     fluidRow(
       column(
         3, offset = 0.75,
@@ -134,6 +135,10 @@ ui <- navbarPage(
       br(),
       h3("Classifier probabilities:"),
       fluidRow(
+        column(9, actionButton("go", "Run calculations"))
+      ),
+      br(),
+      fluidRow(
         column(3, uiOutput("Cs_p", width = 3)),
         column(3, uiOutput("Cs_s", width = 3)),
         column(3, uiOutput("Cs_o", width = 3))
@@ -144,7 +149,7 @@ ui <- navbarPage(
     "Case classification",
     h2("Case classifier performance"),
     h5(strong("Select values on the sliders below to see the impact of these variables on the performance of case classification.")),
-    # uiOutput("warning_text2"),
+    uiOutput("warning_text1"),
     br(),
     fluidRow(
       column(
@@ -201,9 +206,13 @@ ui <- navbarPage(
       br(),
       h3("Classification probabilities:"),
       fluidRow(
+        column(9, actionButton("go", "Run calculations"))
+      ),
+      br(),
+      fluidRow(
         column(3, uiOutput("Pp_p", width = 3)),
         column(3, uiOutput("Ps_s", width = 3))
-        ),
+      ),
       fluidRow(
         column(6, uiOutput("theta", width = 6))
       )
@@ -213,7 +222,6 @@ ui <- navbarPage(
     "Rs bias",
     h2("Bias in Rs inference"),
     h5(strong("Select values on the sliders below to see the impact of these variables on the performance of R estimation.")),
-    # uiOutput("warning_text2"),
     br(),
     fluidRow(
       column(
@@ -269,6 +277,10 @@ ui <- navbarPage(
       
       br(),
       fluidRow(
+        column(9, actionButton("go", "Run calculations"))
+      ),
+      br(),
+      fluidRow(
         column(4, uiOutput("Robs", width = 4)),
         column(4, uiOutput("delta", width = 4))
       )
@@ -278,7 +290,6 @@ ui <- navbarPage(
     "Odds ratio",
     h2("Bias in observed odds ratio"),
     h5(strong("Select values on the sliders below to see the impact of these variables on the performance of trait classification.")),
-    # uiOutput("warning_text2"),
     br(),
     fluidRow(
       column(
@@ -318,7 +329,7 @@ ui <- navbarPage(
         )
       )
     ),
-      fluidRow(
+    fluidRow(
       column(
         3, offset = 0.75,
         sliderInput(
@@ -358,22 +369,126 @@ ui <- navbarPage(
       
       br(),
       fluidRow(
+        column(9, actionButton("go", "Run calculations"))
+      ),
+      br(),
+      fluidRow(
         column(3, uiOutput("Qprime_pp", width = 3)),
         column(3, uiOutput("Qprime_sp", width = 3)),
         column(3, uiOutput("OR", width = 3))
       )
     ),
+  ),
+  tabPanel(
+    "Odds ratio data",
+    h2("Bias in observed odds ratio from data"),
+    h5(strong("Select values on the sliders below to see the impact of these variables on the performance of trait classification.")),
+    uiOutput("warning_text2"),
+    br(),
+    fluidRow(
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "Rp",
+          label=div(style="text-align:center",
+                    "Number of primary cases per cluster (\\(R_p\\))"),
+          min = 1,
+          max = 2,
+          value = 1.5,
+          step = 0.2
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "ks",
+          label=div(style="text-align:center",
+                    "Dispersion (\\(k_s\\))"),
+          min = 0,
+          max = 2,
+          value = 0.5,
+          step = 0.1
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        sliderInput(
+          "PObs",
+          label=div(style="text-align:center",
+                    "Probability of observing each case (\\(P_{obs}\\))"),
+          min = 0,
+          max = 1,
+          value = 0.5,
+          step = 0.1
+        )
+      ),
+    ),
+    fluidRow(
+      column(
+        3, offset = 0.75,
+        numericInput(
+          "TotalCases",
+          label = div(style = "text-align:center",
+                      "Total number of cases"),
+          value = 829,
+          step = 1
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        numericInput(
+          "SecCases",
+          label = div(style = "text-align:center",
+                      "Number of secondary cases"),
+          value = 533,
+          step = 1
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        numericInput(
+          "ppCases",
+          label = div(style = "text-align:center",
+                      "Number of trait-positive primary cases"),
+          value = 161,
+          step = 1
+        )
+      ),
+      column(
+        3, offset = 0.75,
+        numericInput(
+          "spCases",
+          label = div(style = "text-align:center",
+                      "Number of trait-positive secondary cases"),
+          value = 238,
+          step = 1
+        )
+      )
+    ),
+    br(),
+    fluidRow(
+      column(9, actionButton("go", "Run calculations"))
+    ),
+    br(),
+    fluidRow(
+      column(3, uiOutput("Prop_pp", width = 3)),
+      column(3, uiOutput("Prop_sp", width = 3)),
+      column(3, uiOutput("OR_inf", width = 3))
+    )
   )
 )
 
 
 # Define server logic required to draw a histogram
 server <- function(input, output)  {
-  Cp_p_eval <- reactive({
+  Cp_p_eval <- eventReactive(input$go, {
     input$PObs / (1 - input$PObs + input$PObs * input$NumPrimaryCasesCluster)
   })
-  Cp_s_eval <- reactive({
+  Cp_s_eval <- eventReactive(input$go, {
     input$PObs - Cp_p_eval()
+  })
+  Cx_o_eval <- eventReactive(input$go, {
+    1 - input$PObs
   })
   output$Cp_p <- renderValueBox({
     valueBox(
@@ -389,7 +504,7 @@ server <- function(input, output)  {
   })
   output$Cp_o <- renderValueBox({
     valueBox(
-      value = paste0(round(1 - input$PObs, digits=2)),
+      value = paste0(round(Cx_o_eval(), digits=2)),
       "True primary is unobserved",
       color="light-blue")
   })
@@ -431,10 +546,10 @@ server <- function(input, output)  {
     j_vals <- 2:jmax
     sum(rj_vals * pobs * (1 - pobs) ^ (j_vals - 1))
   }
-  Cs_p_eval <- reactive({
+  Cs_p_eval <- eventReactive(input$go, {
     Cs_p_fn(input$Rp, input$Rs, input$PObs, input$ks, 200)
   })
-  Cs_s_eval <- reactive({
+  Cs_s_eval <- eventReactive(input$go, {
     input$PObs - Cs_p_eval()
   })
   output$Cs_p <- renderValueBox({
@@ -451,17 +566,17 @@ server <- function(input, output)  {
   })
   output$Cs_o <- renderValueBox({
     valueBox(
-      value = paste0(round(1 - input$PObs, digits=2)),
+      value = paste0(round(Cx_o_eval(), digits=2)),
       "True secondary is unobserved",
       color="light-blue")
   })
-  Pp_p_eval <- reactive({
+  Pp_p_eval <- eventReactive(input$go, {
     Cp_p_eval() * (1 - input$Rs)/(Cp_p_eval() * (1 - input$Rs) + Cs_p_eval() * input$Rs)
   })
-  Ps_s_eval <- reactive({
+  Ps_s_eval <- eventReactive(input$go, {
     Cs_s_eval() * input$Rs / (Cs_s_eval() * input$Rs + Cp_s_eval() * (1 - input$Rs))
   })
-  theta_eval <- reactive({
+  theta_eval <- eventReactive(input$go, {
     (Cs_s_eval() * input$Rs + Cp_p_eval() * (1 - input$Rs)) / input$PObs
   })
   output$Pp_p <- renderValueBox({
@@ -485,10 +600,10 @@ server <- function(input, output)  {
       color = "light-blue"
     )
   })
-  Robs_eval <- reactive({
+  Robs_eval <- eventReactive(input$go, {
     (Cp_s_eval() * (1 - input$Rs) + input$Rs * Cs_s_eval()) / input$PObs
   })
-  delta_eval <- reactive({
+  delta_eval <- eventReactive(input$go, {
     Robs_eval() - input$Rs
   })
   output$Robs <- renderValueBox({
@@ -520,16 +635,16 @@ server <- function(input, output)  {
   Qprime_pm_eval <- reactive({
     (Qpm_eval() * Cp_p_eval() + Qsm_eval() * Cs_p_eval()) / input$PObs
   })
-  Qprime_pp_eval <- reactive({
+  Qprime_pp_eval <- eventReactive(input$go, {
     (Qpp_eval() * Cp_p_eval() + Qsp_eval() * Cs_p_eval()) / input$PObs
   })
   Qprime_sm_eval <- reactive({
     (Qpm_eval() * Cp_s_eval() + Qsm_eval() * Cs_s_eval()) / input$PObs
   })
-  Qprime_sp_eval <- reactive({
+  Qprime_sp_eval <- eventReactive(input$go, {
     (Qpp_eval() * Cp_s_eval() + Qsp_eval() * Cs_s_eval()) / input$PObs
   })
-  OR_eval <- reactive({
+  OR_eval <- eventReactive(input$go, {
     Qprime_pp_eval() * Qprime_sm_eval() / (Qprime_pm_eval() * Qprime_sp_eval())
   })
   output$Qprime_pp <- renderValueBox({
@@ -553,62 +668,90 @@ server <- function(input, output)  {
       color = "light-blue"
     )
   })
-  
-  ##
-  
-  SEIR_equations <- function(time, variables, parameters) {
-    with(as.list(c(variables, parameters)), {
-      dS <- -(beta/gamma) * (S/1000) * I
-      dE <- (beta/gamma) * (S/1000) * I - (1/gamma) * E
-      dI <-  (1/gamma) * E - (1/delta)*I
-      dR <-  (1/delta) * I
-      return(list(c(dS, dE, dI, dR)))
-    })
-  }
-  
-  SEIR_values_1 <- reactive({
-    req(input$time_values, input$beta, input$gamma, input$delta)
-    ode(y = c(S = 1000, E=1, I = 0, R = 0),
-        times = seq(input$time_values[1], input$time_values[2]),
-        func = SEIR_equations,
-        parms = c(beta = input$beta, gamma = input$gamma, delta=input$delta))
+  snCases <- reactive({
+    (input$SecCases - input$spCases) / input$TotalCases
   })
-  
-  output$SEIR_plot <- renderPlot({
-    val <- as.data.frame(SEIR_values_1())
-    with(val, {
-      plot(time, S, type = "l", col = "blue",
-           xlab = "Time period (days)", ylab = "Number of individuals",
-           ylim = c(0,1000), lwd=4)
-      lines(time, E, col="orange", lwd=4)
-      lines(time, I, col = "red", lwd=4)
-      lines(time, R, col = "green", lwd=4)
-    })
-    legend("topright", legend=c("Susceptible", "Exposed", "Infectious", "Recovered"),
-           col = c("blue", "orange", "red", "green"), lwd =4, bty = "n")
+  pnCases <- reactive({
+    (input$TotalCases - input$SecCases - input$ppCases) / input$TotalCases
+  })
+  spCases <- reactive({
+    input$spCases / input$TotalCases
+  })
+  ppCases <- reactive({
+    input$ppCases / input$TotalCases
+  })
+  Cs_p_eval2 <- reactive({
+    Cs_p_fn(input$Rp, input$SecCases / input$TotalCases, input$PObs, input$ks, 200)
+  })
+  Cs_s_eval2 <- reactive({
+    input$PObs - Cs_p_eval2()
+  })
+  data_OR_denom <- reactive({
+    Cp_s_eval() * Cs_p_eval2() - Cp_p_eval() * Cs_s_eval2()
+  })
+  Q_pn_data_eval <- reactive({
+    input$PObs * (snCases() * Cs_p_eval2() - pnCases() * Cs_s_eval2()) / data_OR_denom()
+  })
+  Q_pp_data_eval <- reactive({
+    input$PObs * (spCases() * Cs_p_eval2() - ppCases() * Cs_s_eval2()) / data_OR_denom()
+  })
+  Q_sn_data_eval <- reactive({
+    -input$PObs * (snCases() * Cp_p_eval() - pnCases() * Cp_s_eval()) / data_OR_denom()
+  })
+  Q_sp_data_eval <- reactive({
+    -input$PObs * (spCases() * Cp_p_eval() - ppCases() * Cp_s_eval()) / data_OR_denom()
+  })
+  Prop_pp_eval <- eventReactive(input$go, {
+    Q_pp_data_eval() / (Q_pn_data_eval() + Q_pp_data_eval())
+  })
+  Prop_sp_eval <- eventReactive(input$go, {
+    Q_sp_data_eval() / (Q_sn_data_eval() + Q_sp_data_eval())
+  })
+  OR_inf_eval <- eventReactive(input$go, {
+    (Q_pp_data_eval() * Q_sn_data_eval()) / (Q_pn_data_eval() * Q_sp_data_eval())
+  })
+  output$Prop_pp <- renderValueBox({
+    valueBox(
+      value = paste0(round(
+        Prop_pp_eval(), digits = 2
+      )),
+      "Inferred proportion of primary cases that are positive",
+      color = "green"
+    )
+  })
+  output$Prop_sp <- renderValueBox({
+    valueBox(
+      value = paste0(round(
+        Prop_sp_eval(),
+        digits = 2
+      )),
+      "Inferred proportion of secondary cases that are positive",
+      color = "purple"
+    )
+  })
+  output$OR_inf <- renderValueBox({
+    valueBox(
+      value = paste0(round(
+        OR_inf_eval(), digits = 2
+      )),
+      "Inferred odds ratio for positive cases being primary",
+      color = "light-blue"
+    )
   })
   
   
   output$warning_text1 <- renderUI({
     HTML(paste0("<f><font color = red><i>", "These models are intended for exploratory analysis only. Please refer to the", 
-                "</f></font></i>", "<a href=https://doi.org/10.1101/2021.07.05.21260043>"," corresponding publication ", "</a>", 
+                # "</f></font></i>", "<a href=https://doi.org/10.1101/2021.07.05.21260043>",
+                " corresponding publication ", "</a>", 
                 "<f><font color = red><i>", "for description of modeling limitations. 
         Please involve an expert in computational modeling for any policy-decision making that is influenced by this web interface.", "</f></font></i>"))
   })
   
   output$warning_text2 <- renderUI({
-    HTML(paste0("<f><font color = red><i>", "These models are intended for exploratory analysis only. Please refer to the", 
-                "</f></font></i>", "<a href=https://doi.org/10.1101/2021.07.05.21260043>"," corresponding publication ", "</a>", 
-                "<f><font color = red><i>", "for description of modeling limitations. 
-        Please involve an expert in computational modeling for any policy-decision making that is influenced by this web interface.", "</f></font></i>"))
+    HTML(paste0("<f><font color = red><i>", "Ensure that R_p is not too large compared to your data...", "</f></font></i>"))
   })
   
-  output$warning_text3 <- renderUI({
-    HTML(paste0("<f><font color = red><i>", "These models are intended for exploratory analysis only. Please refer to the", 
-                "</f></font></i>", "<a href=https://doi.org/10.1101/2021.07.05.21260043>"," corresponding publication ", "</a>", 
-                "<f><font color = red><i>", "for description of modeling limitations. 
-        Please involve an expert in computational modeling for any policy-decision making that is influenced by this web interface.", "</f></font></i>"))
-  })
 }
 
 

@@ -11,7 +11,7 @@ function res_arr = OR_performance( ...
 Q_pn = p_obs * (X_sn*C_sp - X_pn*C_ss)/(C_ps*C_sp - C_pp*C_ss);
 Q_pp = p_obs * (X_sp*C_sp - X_pp*C_ss)/(C_ps*C_sp - C_pp*C_ss);
 Q_sn = p_obs * (X_sn - X_pn*C_ps/C_pp)/(C_ss - C_sp*C_ps/C_pp);
-Q_sp = p_obs * (X_sp - X_pp*C_ps/C_pp)/(C_ss - C_sp*C_ps/C_pp); % this one is negative for some reason
+Q_sp = p_obs * (X_sp - X_pp*C_ps/C_pp)/(C_ss - C_sp*C_ps/C_pp);
 % Q_sp_int_1 = X_sp;
 % Q_sp_int_2 = X_pp*C_ps/C_pp;
 % Q_sp_int_1
