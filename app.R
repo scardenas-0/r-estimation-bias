@@ -28,6 +28,18 @@ ui <- navbarPage(
     h6("2) The surveillance system observes a cluster (a 'reported cluster') and assigns one case as primary and all others as secondary."),
     h6("3) True chains do not span multiple reported clusters."),
     br(),
+    div(
+      style = "text-align:left; margin-top:10px;",
+      tags$img(src = "null_classification_scheme.png", height = "400px")
+    ),
+    h6(strong("Figure 1: Surveillance challenges for infections with subcritical transmission")),
+    h6(
+    "Each of the four panels represents a different surveillance scenario for an identical set of true chains.
+		Scenario 1 illustrates perfect surveillance, so each box contains a true chain.
+		Scenarios 2-4 show how imperfect observation and entanglement of transmission chains can lead to misclassification of cases.
+		The boxes now delineate reported chains, as distinct from the true chains depicted in scenario 1.
+    In these scenarios, a `classification rule' is applied where one case in each reported chain is determined to be due to primary introduction and all others from secondary transmission."
+    )
   ),
   tabPanel(
     "Primary Cases",
@@ -64,164 +76,27 @@ ui <- navbarPage(
     p(strong("Model Focus:"), "Our focus is on ‘weak’ or ‘subcritical’ transmission, which we define as occurring when the effective reproduction number, 
     (\\(R_s\\)), is <1, meaning sustained transmission is not possible. Due to the stochastic and sporadic nature of subcritical transmission, high-quality
     surveillance data is often challenging to obtain. Case misclassification may result from unobserved cases, or from transmission chain entanglement", style = "font-size:12px"),
-    h3("Classifier probabilities:"),
     fluidRow(
       column(9, actionButton("go", "Run calculations"))
     ),
     br(),
+    h3("Classifier probabilities:"),
     fluidRow(
-      column(3, uiOutput("Cp_p", width = 3)),
-      column(3, uiOutput("Cp_s", width = 3)),
-      column(3, uiOutput("Cp_o", width = 3))
-    )
+      column(2, uiOutput("Cp_p", width = 2)),
+      column(2, uiOutput("Cp_s", width = 2)),
+      column(2, uiOutput("Cp_o", width = 2))
+    ),
+    br(),
+    div(
+      style = "text-align:left; margin-top:10px;",
+      tags$img(src = "prim_classification.png", height = "400px")
+    ),
+    h6(strong("Figure 2: Probability that a true primary case is classified as a primary or secondary case."))
   ),
   tabPanel(
     "Secondary Cases",
-    h2("Secondary Case Classification"),
-    h5(strong("Select values on the sliders below to see the impact of these variables on the probability of secondary case classification.")),
-    br(),
-    fluidRow(
-      column(
-        3, offset = 0.75,
-        sliderInput(
-          "Rp",
-          label=div(style="text-align:center",
-                    "Number of primary cases per cluster (\\(R_p\\))"),
-          min = 1,
-          max = 2,
-          value = 1.5,
-          step = 0.2
-        )
-      ),
-      column(
-        3, offset = 0.75,
-        sliderInput(
-          "Rs",
-          label=div(style="text-align:center",
-                    "Reproductive number (\\(R_s\\))"),
-          min = 0,
-          max = 1,
-          value = 0.5,
-          step = 0.1
-        )
-      )
-    ),
-    fluidRow(
-      column(
-        3, offset = 0.75,
-        sliderInput(
-          "ks",
-          label=div(style="text-align:center",
-                    "Dispersion (\\(k_s\\))"),
-          min = 0,
-          max = 2,
-          value = 1.5,
-          step = 0.1
-        )
-      ),
-      column(
-        3, offset = 0.75,
-        sliderInput(
-          "PObs",
-          label=div(style="text-align:center",
-                    "Probability of observing each case (\\(P_{obs}\\))"),
-          min = 0,
-          max = 1,
-          value = 0.5,
-          step = 0.1
-        )
-      ),
-      
-      br(),
-      h3("Classifier probabilities:"),
-      fluidRow(
-        column(9, actionButton("go", "Run calculations"))
-      ),
-      br(),
-      fluidRow(
-        column(3, uiOutput("Cs_p", width = 3)),
-        column(3, uiOutput("Cs_s", width = 3)),
-        column(3, uiOutput("Cs_o", width = 3))
-      )
-    ),
-  ),
-  tabPanel(
-    "Case classification",
-    h2("Case classifier performance"),
-    h5(strong("Select values on the sliders below to see the impact of these variables on the performance of case classification.")),
-    uiOutput("warning_text1"),
-    br(),
-    fluidRow(
-      column(
-        3, offset = 0.75,
-        sliderInput(
-          "Rp",
-          label=div(style="text-align:center",
-                    "Number of primary cases per cluster (\\(R_p\\))"),
-          min = 1,
-          max = 2,
-          value = 1.5,
-          step = 0.2
-        )
-      ),
-      column(
-        3, offset = 0.75,
-        sliderInput(
-          "Rs",
-          label=div(style="text-align:center",
-                    "Reproductive number (\\(R_s\\))"),
-          min = 0,
-          max = 1,
-          value = 0.5,
-          step = 0.1
-        )
-      )
-    ),
-    fluidRow(
-      column(
-        3, offset = 0.75,
-        sliderInput(
-          "ks",
-          label=div(style="text-align:center",
-                    "Dispersion (\\(k_s\\))"),
-          min = 0,
-          max = 2,
-          value = 1.5,
-          step = 0.1
-        )
-      ),
-      column(
-        3, offset = 0.75,
-        sliderInput(
-          "PObs",
-          label=div(style="text-align:center",
-                    "Probability of observing each case (\\(P_{obs}\\))"),
-          min = 0,
-          max = 1,
-          value = 0.5,
-          step = 0.1
-        )
-      ),
-      
-      br(),
-      h3("Classification probabilities:"),
-      fluidRow(
-        column(9, actionButton("go", "Run calculations"))
-      ),
-      br(),
-      fluidRow(
-        column(3, uiOutput("Pp_p", width = 3)),
-        column(3, uiOutput("Ps_s", width = 3))
-      ),
-      fluidRow(
-        column(6, uiOutput("theta", width = 6))
-      )
-    ),
-  ),
-  tabPanel(
-    "Rs bias",
-    h2("Bias in Rs inference"),
-    h5(strong("Select values on the sliders below to see the impact of these variables on the performance of R estimation.")),
+    h2("Case Classification and R inference"),
+    h5(strong("Select values on the sliders below to see the impact of these variables on the probability of case classification and R inference.")),
     br(),
     fluidRow(
       column(
@@ -280,10 +155,45 @@ ui <- navbarPage(
         column(9, actionButton("go", "Run calculations"))
       ),
       br(),
+      h4("Secondary case classifier probabilities:"),
       fluidRow(
-        column(4, uiOutput("Robs", width = 4)),
-        column(4, uiOutput("delta", width = 4))
-      )
+        column(2, uiOutput("Cs_p", width = 2)),
+        column(2, uiOutput("Cs_s", width = 2)),
+        column(2, uiOutput("Cs_o", width = 2))
+      ),
+      br(),
+      div(
+        style = "text-align:left; margin-top:10px;",
+        tags$img(src = "sec_classification.png", height = "600px")
+      ),
+      h6(strong("Figure 3: Probability that a true secondary case is classified as a primary or secondary case.")),
+      h6("Heterogeneous transmission corresponds to \\(k_s=0.3\\) and homogeneous transmission corresponds to \\(k_s=\\infty\\)"),
+      br(),
+      h4("Case classification accuracy:"),
+      fluidRow(
+        column(2, uiOutput("Pp_p", width = 2)),
+        column(2, uiOutput("Ps_s", width = 2)),
+        column(2, uiOutput("theta", width = 2))
+      ),
+      br(),
+      div(
+        style = "text-align:left; margin-top:10px;",
+        tags$img(src = "class_accuracy.png", height = "600px")
+      ),
+      h6(strong("Figure 4: Probabilities that observed cases are correctly classified as primary or secondary cases.")),
+      h6("Heterogeneous transmission corresponds to \\(k_s=0.3\\) and homogeneous transmission corresponds to \\(k_s=\\infty\\)"),
+      br(),
+      h4("Bias in R estimation:"),
+      fluidRow(
+        column(3, uiOutput("Robs", width = 3)),
+        column(3, uiOutput("delta", width = 3))
+      ),
+      br(),
+      div(
+        style = "text-align:left; margin-top:10px;",
+        tags$img(src = "R_est.png", height = "500px")
+      ),
+      h6(strong("Figure 5: Bias of estimating the reproduction number, \\(R_s\\)"))
     ),
   ),
   tabPanel(
@@ -315,7 +225,9 @@ ui <- navbarPage(
           value = 0.5,
           step = 0.1
         )
-      ),
+      )
+    ),
+    fluidRow(
       column(
         3, offset = 0.75,
         sliderInput(
@@ -327,9 +239,7 @@ ui <- navbarPage(
           value = 1.5,
           step = 0.1
         )
-      )
-    ),
-    fluidRow(
+      ),
       column(
         3, offset = 0.75,
         sliderInput(
@@ -341,7 +251,9 @@ ui <- navbarPage(
           value = 0.5,
           step = 0.1
         )
-      ),
+      )
+    ),
+    fluidRow(
       column(
         3, offset = 0.75,
         sliderInput(
@@ -374,9 +286,23 @@ ui <- navbarPage(
       br(),
       fluidRow(
         column(3, uiOutput("Qprime_pp", width = 3)),
-        column(3, uiOutput("Qprime_sp", width = 3)),
-        column(3, uiOutput("OR", width = 3))
-      )
+        column(3, uiOutput("Qprime_sp", width = 3))
+      ),
+      fluidRow(
+        column(6, uiOutput("OR", width = 6))
+      ),
+      br(),
+      div(
+        style = "text-align:left; margin-top:10px;",
+        tags$img(src = "ORx.png", height = "600px")
+      ),
+      h6(strong("Figure 6: Bias of observed odds ratio.")),
+      h6("Each panel is a contour plot showing how the observed odds ratio depends on the observation probability, \\(p_{obs}\\),
+      and the average number of primary infections per reported chain, \\(R_p\\).
+		Each row of panels corresponds to the same effective reproduction number, \\(R_s\\).
+		Each column of panels corresponds to the same fraction of true primary cases with the trait of interest, \\(I_p\\).
+		The fraction of true secondary cases to have the trait, \\(I_s\\), is set so that the true odds ratio is always 4.
+		From left to right, \\(I_s\\) equals 0.5, 0.2, and 0.027.")
     ),
   ),
   tabPanel(
@@ -393,7 +319,7 @@ ui <- navbarPage(
           label=div(style="text-align:center",
                     "Number of primary cases per cluster (\\(R_p\\))"),
           min = 1,
-          max = 2,
+          max = 10,
           value = 1.5,
           step = 0.2
         )
@@ -443,7 +369,9 @@ ui <- navbarPage(
           value = 533,
           step = 1
         )
-      ),
+      )
+    ),
+    fluidRow(
       column(
         3, offset = 0.75,
         numericInput(
@@ -472,8 +400,10 @@ ui <- navbarPage(
     br(),
     fluidRow(
       column(3, uiOutput("Prop_pp", width = 3)),
-      column(3, uiOutput("Prop_sp", width = 3)),
-      column(3, uiOutput("OR_inf", width = 3))
+      column(3, uiOutput("Prop_sp", width = 3))
+    ),
+    fluidRow(
+      column(6, uiOutput("OR_inf", width = 6))
     )
   )
 )
@@ -493,7 +423,8 @@ server <- function(input, output)  {
   output$Cp_p <- renderValueBox({
     valueBox(
       value = paste0(round(Cp_p_eval(), digits=2)),
-      "True primary classified as true primary",
+      "True primary classified as primary",
+      # Valid colors are: red, yellow, aqua, blue, light-blue, green, navy, teal, olive, lime, orange, fuchsia, purple, maroon, black.
       color = "green")
   })
   output$Cp_s <- renderValueBox({
@@ -506,7 +437,7 @@ server <- function(input, output)  {
     valueBox(
       value = paste0(round(Cx_o_eval(), digits=2)),
       "True primary is unobserved",
-      color="light-blue")
+      color="black")
   })
   
   lx_y <- function(x, y, ks, Rs) {
@@ -555,7 +486,7 @@ server <- function(input, output)  {
   output$Cs_p <- renderValueBox({
     valueBox(
       value = paste0(round(Cs_p_eval(), digits=2)),
-      "True secondary classified as true primary",
+      "True secondary classified as primary",
       color = "green")
   })
   output$Cs_s <- renderValueBox({
@@ -568,7 +499,7 @@ server <- function(input, output)  {
     valueBox(
       value = paste0(round(Cx_o_eval(), digits=2)),
       "True secondary is unobserved",
-      color="light-blue")
+      color="black")
   })
   Pp_p_eval <- eventReactive(input$go, {
     Cp_p_eval() * (1 - input$Rs)/(Cp_p_eval() * (1 - input$Rs) + Cs_p_eval() * input$Rs)
@@ -583,21 +514,21 @@ server <- function(input, output)  {
     valueBox(
       value = paste0(round(Pp_p_eval(), digits = 2)),
       "Probability that a primary classification is a true primary case",
-      color = "green"
+      color = "olive"
     )
   })
   output$Ps_s <- renderValueBox({
     valueBox(
       value = paste0(round(Ps_s_eval(), digits = 2)),
       "Probability that a secondary classification is a true secondary case",
-      color = "purple"
+      color = "maroon"
     )
   })
   output$theta <- renderValueBox({
     valueBox(
       value = paste0(round(theta_eval(), digits = 2)),
       "Accuracy that an observed case has the correct primary vs secondary assignment",
-      color = "light-blue"
+      color = "navy"
     )
   })
   Robs_eval <- eventReactive(input$go, {
@@ -610,14 +541,14 @@ server <- function(input, output)  {
     valueBox(
       value = paste0(round(Robs_eval(), digits = 2)),
       "Observed reproduction number",
-      color = "green"
+      color = "blue"
     )
   })
   output$delta <- renderValueBox({
     valueBox(
       value = paste0(round(delta_eval(), digits = 2)),
       "Bias of R estimate",
-      color = "purple"
+      color = "aqua"
     )
   })
   Qpm_eval <- reactive({
@@ -665,7 +596,7 @@ server <- function(input, output)  {
     valueBox(
       value = paste0(round(OR_eval(), digits = 2)),
       "Observed odds ratio that a trait positive case is primary",
-      color = "light-blue"
+      color = "navy"
     )
   })
   snCases <- reactive({
@@ -711,31 +642,42 @@ server <- function(input, output)  {
     (Q_pp_data_eval() * Q_sn_data_eval()) / (Q_pn_data_eval() * Q_sp_data_eval())
   })
   output$Prop_pp <- renderValueBox({
+    val <- Prop_pp_eval()
+    validate(
+      need(val >= 0, "Error: proportion is negative")
+    )
     valueBox(
       value = paste0(round(
-        Prop_pp_eval(), digits = 2
+        val, digits = 2
       )),
       "Inferred proportion of primary cases that are positive",
       color = "green"
     )
   })
   output$Prop_sp <- renderValueBox({
+    val <- Prop_sp_eval()
+    validate(
+      need(val >= 0, "Error: proportion is negative, R_p too large")
+    )
     valueBox(
       value = paste0(round(
-        Prop_sp_eval(),
-        digits = 2
+        val, digits = 2
       )),
       "Inferred proportion of secondary cases that are positive",
       color = "purple"
     )
   })
   output$OR_inf <- renderValueBox({
+    val <- OR_inf_eval()
+    validate(
+      need(val >= 0, "Error: odds ratio is negative")
+    )
     valueBox(
       value = paste0(round(
-        OR_inf_eval(), digits = 2
+        val, digits = 2
       )),
       "Inferred odds ratio for positive cases being primary",
-      color = "light-blue"
+      color = "navy"
     )
   })
   
