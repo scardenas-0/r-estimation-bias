@@ -187,4 +187,4 @@ text(1.0,-0.08,0,'Primary cases per cluster (R_p)','FontSize', 11)
 
 % savepdf('Figures/040519_mpx_app')
 set(gcf, 'position', [10, 10, 550, 600])
-exportgraphics(gcf, 'Figures/082425_mpox_app.pdf')
+exportgraphics(gcf, 'Figures/111925_mpox_app.pdf')

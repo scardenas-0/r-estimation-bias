@@ -1,0 +1,128 @@
+
+%% Figure look at R and OR for mpox in 2020s
+figure(1),clf
+
+clear
+d2 = load('Data/082225_mpox_OR.mat');
+d1 = d2.d_mpox;
+R_inf = squeeze(d1.rs_inf_res)';
+
+% Prob observed primary is a primary
+subplot (2,2,1)
+contour(d1.rp_arr,d1.p_obs_arr,d2.res_arr(:,:,5)',[0.7, 0.8, 0.9, 1],'ShowText','On','LineWidth',2)
+set(gca,'FontSize',9)
+title({'Probability that a case classified_ ','as primary is primary (P_{p\rightarrow p})'})
+% ylabel({'Observation probability (P_{obs})'},'FontSize',11)
+%xlabel({'              Primary cases per cluster (R_p)'})
+
+% Prob observed secondary is a secondary
+subplot (2,2,2)
+contour(d1.rp_arr,d1.p_obs_arr,d2.res_arr(:,:,6)','ShowText','On','LineWidth',2)
+set(gca,'FontSize',9)
+title({'Probability that a case classified_ ','as secondary is secondary (P_{s\rightarrow s})'})
+%title({'P_{s\rightarrow s}'})
+%xlabel({'              Primary cases per cluster (R_p)'})
+
+% Inferred r_effective
+subplot (2,2,3)
+contour(d1.rp_arr,d1.p_obs_arr,R_inf,'ShowText','On','LineWidth',2)
+set(gca,'FontSize',9)
+title({'Effective reproduction number'})
+% ylabel({'              Observation probability (P_{obs})'},'FontSize',11)
+% xlabel({'              Primaries per cluster (R_p)'}, 'FontSize', 11)
+xlabel(' ')
+text(1.42,0.08,0,'Primary cases per cluster (R_p)','FontSize', 11)
+ylabel(' ')
+text(0.92, 0.85, 0, 'Observation probability (P_{obs})', 'FontSize', 11, 'Rotation', 90)
+
+% Inferred odds ratio
+% res_arr(:,:,10:13) = [Q_pn Q_pp Q_sn Q_sp];
+subplot (2,2,4)
+temp = d2.res_arr(:,:,11).*d2.res_arr(:,:,12)./(d2.res_arr(:,:,10) .* d2.res_arr(:,:,13));
+% bounds(temp)
+% abs(temp) used because of some convergence difficulties yielding large negative
+% values of OR for high p_obs and r_p
+% contour(d1.rp_arr,d1.p_obs_arr,abs(temp)',[0.01 0.02 0.03 0.04 0.05 0.06],'ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,temp',[1.5, 1.55, 1.6, 1.65, 1.7],'ShowText','On','LineWidth',2)
+set(gca,'FontSize',9)
+title({'Inferred odds ratio for primary','cases reporting animal contact'})
+%ylabel({'Observation_ ','probability (P_{obs})'})
+% xlabel({'Primaries per cluster (R_p)'}, 'FontSize', 11)
+% text(1.0,-0.08,0,'Primary cases per cluster (R_p)','FontSize', 11)
+
+
+% savepdf('Figures/040519_mpx_app')
+set(gcf, 'position', [20, 20, 800, 600])
+exportgraphics(gcf, 'Figures/111925_mpox.pdf')
+
+%% Figure look at R and OR for MPX in 80s
+figure(1),clf
+
+clear
+d2 = load('Data/050125_nipah_OR');
+% d1 = d2.d_mpx
+d1 = d2.d_nipah
+R_inf = squeeze(d1.rs_inf_res)';
+
+% Prob observed primary is a primary
+subplot (3,2,1)
+contour(d1.rp_arr,d1.p_obs_arr,d2.res_arr(:,:,5)','ShowText','On','LineWidth',2)
+set(gca,'FontSize',12)
+title({'Probability that a case_ ','classified as a primary case_ ', 'is a primary case (P_{p\rightarrow p})'})
+%title({'P_{p\rightarrow p}'})
+%ylabel({'Observation_ ','probability (P_{obs})'})
+%xlabel({'              Primary cases per cluster (R_p)'})
+
+% Prob observed secondary is a secondary
+subplot (3,2,2)
+contour(d1.rp_arr,d1.p_obs_arr,d2.res_arr(:,:,6)','ShowText','On','LineWidth',2)
+set(gca,'FontSize',12)
+title({'Probability that a case_ ','classified as a secondary case_ ', 'is a secondary case (P_{s\rightarrow s})'})
+%title({'P_{s\rightarrow s}'})
+%ylabel({'Observation_ ','probability (P_{obs})'})
+%xlabel({'              Primary cases per cluster (R_p)'})
+
+% Inferred proportion female among primary
+% res_arr(:,:,10:13) = [Q_pn Q_pp Q_sn Q_sp];
+subplot (3,2,3)
+temp = d2.res_arr(:,:,11)./(d2.res_arr(:,:,10) + d2.res_arr(:,:,11));
+contour(d1.rp_arr,d1.p_obs_arr,temp','ShowText','On','LineWidth',2)
+set(gca,'FontSize',12)
+title({'Inferred proportion of','primary cases that are female'})
+ylabel({'Observation probability (P_{obs})'},'FontSize',16)
+%xlabel({'              Primary cases per cluster (R_p)'})
+
+% Inferred proportion female among secondary
+% res_arr(:,:,10:13) = [Q_pn Q_pp Q_sn Q_sp];
+subplot (3,2,4)
+temp = d2.res_arr(:,:,13)./(d2.res_arr(:,:,12) + d2.res_arr(:,:,13))
+contour(d1.rp_arr,d1.p_obs_arr,temp','ShowText','On','LineWidth',2)
+set(gca,'FontSize',12)
+title({'Inferred proportion of','secondary cases that are female'})
+%ylabel({'Observation_ ','probability (P_{obs})'})
+%xlabel({'              Primary cases per cluster (R_p)'})
+
+% Inferred r_effective
+subplot (3,2,5)
+contour(d1.rp_arr,d1.p_obs_arr,R_inf,'ShowText','On','LineWidth',2)
+set(gca,'FontSize',12)
+title({'Effective reproduction number'})
+%ylabel({'Observation_ ','probability (P_{obs})'})
+%xlabel('Primaries per cluster (R_p)')
+
+% Inferred odds ratio
+% res_arr(:,:,10:13) = [Q_pn Q_pp Q_sn Q_sp];
+subplot (3,2,6)
+temp = d2.res_arr(:,:,10).*d2.res_arr(:,:,13)./(d2.res_arr(:,:,11) .* d2.res_arr(:,:,12))
+% abs(temp) used because of some convergence difficulties yielding large negative
+% values of OR for high p_obs and r_p
+% contour(d1.rp_arr,d1.p_obs_arr,abs(temp)',[0.01 0.02 0.03 0.04 0.05 0.06],'ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,temp',[0.01 0.02 0.03 0.04 0.05 0.06],'ShowText','On','LineWidth',2)
+set(gca,'FontSize',12)
+title({'Inferred odds ratio for','secondary cases being female'})
+%ylabel({'Observation_ ','probability (P_{obs})'})
+%xlabel('Primaries per cluster (R_p)')
+text(.85,0.07,0,'Primary cases per cluster (R_p)','FontSize', 16)
+
+% savepdf('Figures/040519_mpx_app')
+exportgraphics(gcf, 'Figures/050125_nipah_app.pdf', 'Resolution', 300)

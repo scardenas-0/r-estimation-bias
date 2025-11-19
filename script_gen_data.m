@@ -1,4 +1,4 @@
-%{
+
 i_max = 800;
 ks_arr = [0.3 1 1e3];
 p_obs_arr = [0.1:0.05:1];
@@ -107,10 +107,6 @@ save('Data/061925_msls_02_perf')
 % Primary infection: Male 142 Female 103
 % Secondary infection: Male 40 Female 53
 
-%%
-% Nipah virus 2001-2014
-% Primary infection: Male 84 Female 85
-% Secondary infection: Male 74 Female 5
 
 clear;
 % k_mpx = 0.3
@@ -154,7 +150,7 @@ for pp = 1:rp_num
 end
 
 save('Data/050125_nipah_OR')
-%}
+
 
 %%
 % Measles OR calculation: age (< or > 19) and primary/secondary case
