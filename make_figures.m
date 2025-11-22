@@ -87,21 +87,21 @@ title({'Effective reproduction number'})
 % ylabel({'              Observation probability (P_{obs})'},'FontSize',11)
 % xlabel({'              Primaries per cluster (R_p)'}, 'FontSize', 11)
 xlabel(' ')
-text(1.42,0.08,0,'Primary cases per cluster (R_p)','FontSize', 11)
+text(1.25,0.08,0,'Primary cases per cluster (R_p)','FontSize', 11)
 ylabel(' ')
-text(0.92, 0.85, 0, 'Observation probability (P_{obs})', 'FontSize', 11, 'Rotation', 90)
+text(0.94, 0.85, 0, 'Observation probability (P_{obs})', 'FontSize', 11, 'Rotation', 90)
 
 % Inferred odds ratio
 % res_arr(:,:,10:13) = [Q_pn Q_pp Q_sn Q_sp];
 subplot (2,2,4)
-temp = d2.res_arr(:,:,11).*d2.res_arr(:,:,12)./(d2.res_arr(:,:,10) .* d2.res_arr(:,:,13));
+temp = d2.res_arr(:,:,13).*d2.res_arr(:,:,10)./(d2.res_arr(:,:,12) .* d2.res_arr(:,:,11));
 % bounds(temp)
 % abs(temp) used because of some convergence difficulties yielding large negative
 % values of OR for high p_obs and r_p
 % contour(d1.rp_arr,d1.p_obs_arr,abs(temp)',[0.01 0.02 0.03 0.04 0.05 0.06],'ShowText','On','LineWidth',2)
-contour(d1.rp_arr,d1.p_obs_arr,temp',[0.1, 0.2, 0.3, 0.4, 0.5, 0.6],'ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,abs(temp)',[1.9, 2.1, 2.3, 2.5, 3, 5],'ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
-title({'Inferred odds ratio for primary','cases reporting animal contact'})
+title({'Inferred odds ratio for secondary','cases being female'})
 %ylabel({'Observation_ ','probability (P_{obs})'})
 % xlabel({'Primaries per cluster (R_p)'}, 'FontSize', 11)
 % text(1.0,-0.08,0,'Primary cases per cluster (R_p)','FontSize', 11)
