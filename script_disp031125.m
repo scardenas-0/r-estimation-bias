@@ -181,8 +181,11 @@ for rr = 1:length(d.rs_arr)
     for ii = 1:length(d.inc_arr)
         nn = nn+1;
         subplot(length(d.rs_arr),length(d.inc_arr),nn)
+        % contour(d.rp_arr,d.p_obs_arr,squeeze(d.res_arr(:,:,rr,ii,2)')-4, [-2.5 -2 -1.5 -1 -0.5],'ShowText','On','LineWidth',2)
         contour(d.rp_arr,d.p_obs_arr,squeeze(d.res_arr(:,:,rr,ii,2)'), [1.5 2 2.5 3 3.5],'ShowText','On','LineWidth',2)
+
         title(strcat(['R_s =',' ',num2str(d.rs_arr(rr)),'   I_p =',' ',num2str(d.inc_arr(ii,1))]));
+        clim([1.5 3.5])
         set(gca,'FontSize',12)
         switch nn
             case 1
