@@ -1,13 +1,16 @@
 %%
 i_max = 800;
-ks_arr = [0.3 1 1e3];
-p_obs_arr = [0.1:0.05:1];
+rp_arr = 1:.1:2;
+rs_arr = [0.2 0.8];
+ks_arr = [0.3 1e3];
+p_obs_arr = 0.1:0.1:1;
 
 %Theory
+
 res_arr = sample_classifer( ...
     i_max, ...
-    1:.05:2, ...
-    0.2:0.3:0.8, ...
+    rp_arr, ...
+    rs_arr, ...
     ks_arr, ...
     p_obs_arr, ...
     'Data/011119_rp_pobs' ...
@@ -17,10 +20,11 @@ res_arr = sample_classifer( ...
 % Observed OR example
 clear;
 k = 0.3;
-rp_arr = 1:.05:2;
+rp_arr = 1:.1:2;
 p_obs_arr = .25:.05:1;
 rs_arr = [0.25, 0.5 0.75];
 inc_arr = [0.8 0.5; 0.5 0.2; 0.1 0.027027];
+
 gen_ORx_data( ...
     rp_arr, ...
     p_obs_arr, ...
@@ -54,7 +58,6 @@ gen_ORx_data( ...
 
 clear;
 k_mpx = 0.3;
-% Compat_arr = compatible_par_inf(800,93/338,1:.025:1.3,k_mpx,0.25:.025:1,'Data/040419_mpx_r');
 Compat_arr = compatible_par_inf( ...
     800, ...
     93/338, ...
@@ -65,12 +68,12 @@ Compat_arr = compatible_par_inf( ...
     );
 
 clear
-d_mpx = load('Data/111925_mpx_r')
+d_mpx = load('Data/111925_mpx_r');
 
 rp_num = length(d_mpx.rp_arr);
 po_num = length(d_mpx.p_obs_arr);
 res_arr = zeros(rp_num,po_num,13);
-k_mpx = 0.3
+k_mpx = 0.3;
 for pp = 1:rp_num
     for oo = 1:po_num
         [pp rp_num oo po_num]
@@ -103,7 +106,7 @@ Compat_arr = compatible_par_inf( ...
     );
 
 clear;
-d_mpox = load('Data/082225_mpox_r')
+d_mpox = load('Data/082225_mpox_r');
 
 rp_num = length(d_mpox.rp_arr);
 po_num = length(d_mpox.p_obs_arr);

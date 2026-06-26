@@ -19,7 +19,7 @@ tt = text(2.01, .9, {'R_s = 0.2'});
 set(tt, 'FontWeight','bold')
 
 ax2 = nexttile;
-contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,3,1,:,9))', 'ShowText','On','LineWidth',2);
+contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,2,1,:,9))', 'ShowText','On','LineWidth',2);
 hold on
 plot(min(d1.rp_arr), max(d1.p_obs_arr), 'r.', 'MarkerSize', 15)
 hold off
@@ -160,7 +160,7 @@ figure(1),clf
 tiledlayout(3,2,'TileSpacing','loose','Padding','compact')
 
 nexttile
-contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,1,3,:,3))','ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,1,2,:,3))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 title({'Probability that a secondary case is_ ', 'classified as a primary case (C_{s\rightarrow p})'})
 set(gca,'XTickLabel','')
@@ -168,7 +168,7 @@ tt = text(2.01, .9, {'Homogeneous','R_s = 0.2'});
 set(tt,'FontWeight','bold')
 
 nexttile
-contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,1,3,:,4))','ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,1,2,:,4))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 set(gca,'XTickLabel','')
 title({'Probability that a secondary case is_ ', 'classified as a secondary case (C_{s\rightarrow s})'})
@@ -192,13 +192,13 @@ set(gca,'YTickLabel','')
 
 
 nexttile
-contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,3,1,:,3))','ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,2,1,:,3))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 tt = text(2.01, .9, {'Heterogeneous','R_s = 0.8'});
 set(tt, 'FontWeight','bold')
 
 nexttile
-contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,3,1,:,4))','ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,2,1,:,4))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 set(gca,'YTickLabel','')
 text(.56,-.08,0,'Primary cases per cluster (R_p)', 'FontSize',12)
@@ -215,20 +215,20 @@ figure(1),clf
 tiledlayout(3,4,'TileSpacing','loose','Padding','compact')
 
 nexttile
-contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,1,3,:,5))','ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,1,2,:,5))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 title({'Probability that a case_ ','classified as a primary case_ ', 'is a primary case (P_{p\rightarrow p})'})
 set(gca,'XTickLabel','')
 
 nexttile
-contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,1,3,:,6))','ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,1,2,:,6))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 set(gca,'XTickLabel','')
 title({'Probability that a case_ ','classified as a secondary case_ ', 'is a secondary case (P_{s\rightarrow s})'})
 set(gca,'YTickLabel','')
 
 nexttile
-contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,1,3,:,7))','ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,1,2,:,7))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 set(gca,'XTickLabel','')
 set(gca,'YTickLabel','')
@@ -265,17 +265,17 @@ axis off
 
 
 nexttile
-contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,3,1,:,5))','ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,2,1,:,5))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 
 nexttile
-contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,3,1,:,6))','ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,2,1,:,6))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 xlabel({'Primary cases per cluster (R_p)'})
 set(gca,'YTickLabel','')
 
 nexttile
-contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,3,1,:,7))','ShowText','On','LineWidth',2)
+contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,2,1,:,7))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 set(gca,'YTickLabel','')
 
