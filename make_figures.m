@@ -14,7 +14,6 @@ set(gca, 'Layer', 'bottom')
 axis square
 set(gca,'FontSize',9)
 title({'Bias of R_s estimate (\delta_R)'})
-% ylabel({'Observation_ ','probability (p_{obs})'})
 set(gca,'XTickLabel','')
 tt = text(2.01, .9, {'R_s = 0.2'});
 set(tt, 'FontWeight','bold')
@@ -47,7 +46,6 @@ for rr = 1:length(d.rs_arr)
     for ii = 1:length(d.inc_arr)
         nn = nn+1;
         subplot(length(d.rs_arr),length(d.inc_arr),nn)
-        % contour(d.rp_arr,d.p_obs_arr,squeeze(d.res_arr(:,:,rr,ii,2)')-4, [-2.5 -2 -1.5 -1 -0.5],'ShowText','On','LineWidth',2)
         contour(d.rp_arr,d.p_obs_arr,squeeze(d.res_arr(:,:,rr,ii,2)'), [1.5 2 2.5 3 3.5],'ShowText','On','LineWidth',2)
         hold on;
         
@@ -96,6 +94,7 @@ exportgraphics(gcf, 'Figures/ORx_062626.pdf')
 figure(1),clf
 
 clear
+% cannot find this data
 d2 = load('Data/082225_2010s_mpox_OR.mat');
 d1 = d2.d_mpox;
 R_inf = squeeze(d1.rs_inf_res)';
@@ -105,44 +104,29 @@ subplot (2,2,1)
 contour(d1.rp_arr,d1.p_obs_arr,d2.res_arr(:,:,5)',[0.7, 0.8, 0.9, 1],'ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 title({'Probability that a case classified_ ','as primary is primary (P_{p\rightarrow p})'})
-% ylabel({'Observation probability (P_{obs})'},'FontSize',11)
-%xlabel({'              Primary cases per cluster (R_p)'})
 
 % Prob observed secondary is a secondary
 subplot (2,2,2)
 contour(d1.rp_arr,d1.p_obs_arr,d2.res_arr(:,:,6)','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 title({'Probability that a case classified_ ','as secondary is secondary (P_{s\rightarrow s})'})
-%title({'P_{s\rightarrow s}'})
-%xlabel({'              Primary cases per cluster (R_p)'})
 
 % Inferred r_effective
 subplot (2,2,3)
 contour(d1.rp_arr,d1.p_obs_arr,R_inf,'ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 title({'Effective reproduction number'})
-% ylabel({'              Observation probability (P_{obs})'},'FontSize',11)
-% xlabel({'              Primaries per cluster (R_p)'}, 'FontSize', 11)
 xlabel(' ')
 text(1.42,0.08,0,'Primary cases per cluster (R_p)','FontSize', 11)
 ylabel(' ')
 text(0.92, 0.85, 0, 'Observation probability (P_{obs})', 'FontSize', 11, 'Rotation', 90)
 
 % Inferred odds ratio
-% res_arr(:,:,10:13) = [Q_pn Q_pp Q_sn Q_sp];
 subplot (2,2,4)
 temp = d2.res_arr(:,:,11).*d2.res_arr(:,:,12)./(d2.res_arr(:,:,10) .* d2.res_arr(:,:,13));
-% bounds(temp)
-% abs(temp) used because of some convergence difficulties yielding large negative
-% values of OR for high p_obs and r_p
-% contour(d1.rp_arr,d1.p_obs_arr,abs(temp)',[0.01 0.02 0.03 0.04 0.05 0.06],'ShowText','On','LineWidth',2)
 contour(d1.rp_arr,d1.p_obs_arr,temp',[1.5, 1.55, 1.6, 1.65, 1.7],'ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 title({'Inferred odds ratio for primary','cases reporting animal contact'})
-%ylabel({'Observation_ ','probability (P_{obs})'})
-% xlabel({'Primaries per cluster (R_p)'}, 'FontSize', 11)
-% text(1.0,-0.08,0,'Primary cases per cluster (R_p)','FontSize', 11)
-
 
 set(gcf, 'position', [20, 20, 800, 600])
 exportgraphics(gcf, 'Figures/mpox_2010s_062626.pdf')
@@ -210,21 +194,17 @@ set(gca,'YTickLabel','')
 nexttile
 contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,3,1,:,3))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
-% set(gca,'XTickLabel','')
-% set(gca,'YTickLabel','')
 tt = text(2.01, .9, {'Heterogeneous','R_s = 0.8'});
 set(tt, 'FontWeight','bold')
 
 nexttile
 contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,3,1,:,4))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
-% set(gca,'XTickLabel','')
 set(gca,'YTickLabel','')
 text(.56,-.08,0,'Primary cases per cluster (R_p)', 'FontSize',12)
 
 set(gcf, 'position', [20, 20, 1000, 900])
 exportgraphics(gcf, 'Figures/class_sec_062226.pdf')
-% rp,rs,k,p,[C_pp C_ps C_sp, C_ss perf_p perf_s accur r_inf r_bias]
 
 
 %% Figure: Probabilities that observed cases are correctly classified as 
@@ -287,7 +267,6 @@ axis off
 nexttile
 contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,3,1,:,5))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
-% set(gca,'XTickLabel','')
 
 nexttile
 contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,3,1,:,6))','ShowText','On','LineWidth',2)
@@ -298,7 +277,6 @@ set(gca,'YTickLabel','')
 nexttile
 contour(d1.rp_arr,d1.p_obs_arr,squeeze(d1.res_arr(:,3,1,:,7))','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
-% set(gca,'XTickLabel','')
 set(gca,'YTickLabel','')
 
 nexttile
@@ -308,7 +286,6 @@ axis off
 
 set(gcf, 'position', [20, 20, 1200, 1000])
 exportgraphics(gcf, 'Figures/class_accuracy_062226.pdf')
-% rp,rs,k,p,[C_pp C_ps C_sp, C_ss perf_p perf_s accur r_inf r_bias]
 
 
 %% Figure: Mpox in the Democratic Republic of the Congo, 1981-86: Accuracy 
@@ -319,7 +296,7 @@ figure(1),clf
 
 clear
 d2 = load('Data/111925_1980s_mpox_OR.mat');
-d1 = d2.d_mpx; % mpx vs mpox
+d1 = d2.d_mpx;
 R_inf = squeeze(d1.rs_inf_res)';
 
 % Prob observed primary is a primary
@@ -327,43 +304,29 @@ subplot (2,2,1)
 contour(d1.rp_arr,d1.p_obs_arr,d2.res_arr(:,:,5)',[0.75, 0.8, 0.85, 0.9, 0.95, 1],'ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 title({'Probability that a case classified_ ','as primary is primary (P_{p\rightarrow p})'})
-% ylabel({'Observation probability (P_{obs})'},'FontSize',11)
-%xlabel({'              Primary cases per cluster (R_p)'})
 
 % Prob observed secondary is a secondary
 subplot (2,2,2)
 contour(d1.rp_arr,d1.p_obs_arr,d2.res_arr(:,:,6)','ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 title({'Probability that a case classified_ ','as secondary is secondary (P_{s\rightarrow s})'})
-%title({'P_{s\rightarrow s}'})
-%xlabel({'              Primary cases per cluster (R_p)'})
 
 % Inferred r_effective
 subplot (2,2,3)
 contour(d1.rp_arr,d1.p_obs_arr,R_inf,'ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 title({'Effective reproduction number'})
-% ylabel({'              Observation probability (P_{obs})'},'FontSize',11)
-% xlabel({'              Primaries per cluster (R_p)'}, 'FontSize', 11)
 xlabel(' ')
 text(1.25,0.08,0,'Primary cases per cluster (R_p)','FontSize', 11)
 ylabel(' ')
 text(0.94, 0.85, 0, 'Observation probability (P_{obs})', 'FontSize', 11, 'Rotation', 90)
 
 % Inferred odds ratio
-% res_arr(:,:,10:13) = [Q_pn Q_pp Q_sn Q_sp];
 subplot (2,2,4)
 temp = d2.res_arr(:,:,13).*d2.res_arr(:,:,10)./(d2.res_arr(:,:,12) .* d2.res_arr(:,:,11));
-% bounds(temp)
-% abs(temp) used because of some convergence difficulties yielding large negative
-% values of OR for high p_obs and r_p
-% contour(d1.rp_arr,d1.p_obs_arr,abs(temp)',[0.01 0.02 0.03 0.04 0.05 0.06],'ShowText','On','LineWidth',2)
 contour(d1.rp_arr,d1.p_obs_arr,abs(temp)',[1.9, 2.1, 2.3, 2.5, 3, 5],'ShowText','On','LineWidth',2)
 set(gca,'FontSize',9)
 title({'Inferred odds ratio for secondary','cases being female'})
-%ylabel({'Observation_ ','probability (P_{obs})'})
-% xlabel({'Primaries per cluster (R_p)'}, 'FontSize', 11)
-% text(1.0,-0.08,0,'Primary cases per cluster (R_p)','FontSize', 11)
 
 set(gcf, 'position', [20, 20, 800, 600])
 exportgraphics(gcf, 'Figures/mpox_1980s_062226.pdf')

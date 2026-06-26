@@ -53,7 +53,7 @@ gen_ORx_data( ...
 % Secondary infection: Male 40 Female 53
 
 clear;
-k_mpx = 0.3
+k_mpx = 0.3;
 % Compat_arr = compatible_par_inf(800,93/338,1:.025:1.3,k_mpx,0.25:.025:1,'Data/040419_mpx_r');
 Compat_arr = compatible_par_inf( ...
     800, ...
@@ -86,10 +86,10 @@ for pp = 1:rp_num
     end
 end
 
-save('Data/111925_mpx_OR')
+save('Data/111925_1980s_mpx_OR')
 
 
-%% mpox 2020s
+%% mpox 2010s
 
 clear;
 k_mpox = 0.3;
@@ -125,5 +125,5 @@ for pp = 1:rp_num
     end
 end
 
-save('Data/082225_mpox_OR')
+save('Data/082225_2010s_mpox_OR')
 
