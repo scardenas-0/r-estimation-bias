@@ -1,31 +1,25 @@
-# R Estimation Bias Figures
+R Estimation Bias Figures
+=========================
 
 This repository contains the MATLAB code used to generate the main-text figures and the Figure S.2 sample-size validation analysis.
 
-## Main-text figures
+Main-text figures:
+1. Open MATLAB and set this folder as the current folder.
+2. Run:
 
-To regenerate the main-text results and figures, run the scripts in this order:
-
-```matlab
-generate_data
-make_figures
-```
+   generate_data
+   make_figures
 
 `generate_data.m` creates the MATLAB data files in `data/`, and `make_figures.m` reads those files and exports the figures to `figures/`.
 
-## Figure S.2 sample-size validation
+Figure S.2 sample-size validation:
+1. Open MATLAB and set this folder as the current folder.
+2. Run:
 
-To regenerate Figure S.2, open this folder in MATLAB and run:
+   generate_figure_S2_sample_size_validation
 
-```matlab
-generate_figure_S2_sample_size_validation
-```
-
-## Requirement
-
-MATLAB Statistics and Machine Learning Toolbox.
-
-## Outputs
+Required MATLAB toolbox:
+Statistics and Machine Learning Toolbox
 
 The `figures` folder contains the exported figures.
 

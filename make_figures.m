@@ -35,7 +35,7 @@ clim(ax1, [-0.2 0.35])
 clim(ax2, [-0.2 0.35])
 
 set(gcf, 'position', [20, 20, 1400, 600])
-exportgraphics(gcf, 'Figures/R_est_062226.pdf')
+exportgraphics(gcf, 'figures/R_est_062226.pdf')
 
 %% Figure: Attenuation of the observed odds ratio
 figure(1),clf
@@ -86,7 +86,7 @@ for rr = 1:length(d.rs_arr)
 end
 
 set(gcf, 'position', [20, 20, 1000, 800])
-exportgraphics(gcf, 'Figures/ORx_062626.pdf')
+exportgraphics(gcf, 'figures/ORx_062626.pdf')
 
 %% Figure: Applying our methods to data from mpox in the Democratic 
 % Republic of the Congo, 2013–2017
@@ -129,7 +129,7 @@ set(gca,'FontSize',9)
 title({'Inferred odds ratio for primary','cases reporting animal contact'})
 
 set(gcf, 'position', [20, 20, 800, 600])
-exportgraphics(gcf, 'Figures/mpox_2010s_062626.pdf')
+exportgraphics(gcf, 'figures/mpox_2010s_062626.pdf')
 
 %% Figure: Probability that a true primary case is classified as a primary 
 % or secondary case
@@ -150,7 +150,7 @@ title({'Probability that a primary case is_ ', 'classified as a secondary case (
 set(gca,'YTickLabel','')
 text(.5,-.05,0,'Primary cases per cluster (R_p)','FontSize', 16)
 
-exportgraphics(gcf, 'Figures/class_prim_062626.pdf')
+exportgraphics(gcf, 'figures/class_prim_062626.pdf')
 
 %% Figure: Probability that a true secondary case is classified as a 
 % primary or secondary case
@@ -204,7 +204,7 @@ set(gca,'YTickLabel','')
 text(.56,-.08,0,'Primary cases per cluster (R_p)', 'FontSize',12)
 
 set(gcf, 'position', [20, 20, 1000, 900])
-exportgraphics(gcf, 'Figures/class_sec_062226.pdf')
+exportgraphics(gcf, 'figures/class_sec_062226.pdf')
 
 
 %% Figure: Probabilities that observed cases are correctly classified as 
@@ -285,7 +285,7 @@ set(tt, 'FontSize', 10, 'FontWeight','bold')
 axis off
 
 set(gcf, 'position', [20, 20, 1200, 1000])
-exportgraphics(gcf, 'Figures/class_accuracy_062226.pdf')
+exportgraphics(gcf, 'figures/class_accuracy_062226.pdf')
 
 
 %% Figure: Mpox in the Democratic Republic of the Congo, 1981-86: Accuracy 
@@ -329,5 +329,5 @@ set(gca,'FontSize',9)
 title({'Inferred odds ratio for secondary','cases being female'})
 
 set(gcf, 'position', [20, 20, 800, 600])
-exportgraphics(gcf, 'Figures/mpox_1980s_062226.pdf')
+exportgraphics(gcf, 'figures/mpox_1980s_062226.pdf')
 

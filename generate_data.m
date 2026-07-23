@@ -5,15 +5,14 @@ rs_arr = [0.2 0.8];
 ks_arr = [0.3 1e3];
 p_obs_arr = 0.1:0.1:1;
 
-%Theory
-
+% Theory
 res_arr = sample_classifer( ...
     i_max, ...
     rp_arr, ...
     rs_arr, ...
     ks_arr, ...
     p_obs_arr, ...
-    'Data/011119_rp_pobs' ...
+    'data/011119_rp_pobs' ...
     );
 
 %%
@@ -31,26 +30,8 @@ gen_ORx_data( ...
     rs_arr, ...
     inc_arr, ...
     k, ...
-    'Data/040419_ORx_example' ...
+    'data/040419_ORx_example' ...
     )
-
-
-%% mpox
-% PNAS article 760 cases
-% Ecohealth article 156 sites
-% Compat_arr = compatible_par_inf(500,604/760,1:.1:2,0.3,0.9:.01:1,'Data/012518_mpx_model');
-%
-% Re-framing it so that we might observe between 200 and 700 infection
-% clusters
-%rs_inf_res = compatible_par_inf(500,604/760,1:.2:4,0.3,0.25:.025:1,'Data/011219_mpx_model');
-%compat_arr = compatible_par_mpx(500,0.2:.025:0.8,1,0.3,0.25:.025:1,'Data/011119_mpx_model');
-%rs_inf_res = compatible_par_inf(imax,rs_obs,rp_arr,ks,p_obs_arr,ofile)
-
-% Approximate numbers for MRSA
-% Based on Shea2018_phillips_final.pptx, slide #25 (OLD)
-% There were 392 sequences 42 'transmission events' involving 96 patients.
-% Will interpret that as meaning there were 392-96+42 = 338 primary
-% infections and 96-42 = 54 secondary infections
 
 %% mpox 1980s
 % Primary infection: Male 142 Female 103
@@ -64,11 +45,11 @@ Compat_arr = compatible_par_inf( ...
     1:.05:1.3, ...
     k_mpx, ...
     0.25:.05:1, ...
-    'Data/111925_mpx_r' ...
+    'data/111925_mpx_r' ...
     );
 
 clear
-d_mpx = load('Data/111925_mpx_r');
+d_mpx = load('data/111925_mpx_r');
 
 rp_num = length(d_mpx.rp_arr);
 po_num = length(d_mpx.p_obs_arr);
@@ -89,8 +70,7 @@ for pp = 1:rp_num
     end
 end
 
-save('Data/111925_1980s_mpx_OR')
-
+save('data/111925_1980s_mpx_OR')
 
 %% mpox 2010s
 
@@ -102,11 +82,11 @@ Compat_arr = compatible_par_inf( ...
     1:.05:1.5, ...
     k_mpox, ...
     0.25:.05:1, ...
-    'Data/082225_mpox_r' ...
+    'data/082225_mpox_r' ...
     );
 
 clear;
-d_mpox = load('Data/082225_mpox_r');
+d_mpox = load('data/082225_mpox_r');
 
 rp_num = length(d_mpox.rp_arr);
 po_num = length(d_mpox.p_obs_arr);
@@ -128,5 +108,5 @@ for pp = 1:rp_num
     end
 end
 
-save('Data/082225_2010s_mpox_OR')
+save('data/082225_2010s_mpox_OR')
 
