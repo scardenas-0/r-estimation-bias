@@ -3,7 +3,7 @@ R Estimation Bias Figures
 
 This repository contains the MATLAB code used to generate the main-text figures and the Figure S.2 sample-size validation analysis.
 
-Main-text figures:
+Main-text and supplemental figures:
 1. Open MATLAB and set this folder as the current folder.
 2. Run:
 

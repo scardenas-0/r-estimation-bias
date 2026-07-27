@@ -2,9 +2,9 @@
 
 This repository contains the MATLAB code used to generate the main-text figures and the Figure S.2 sample-size validation analysis.
 
-## Main-text figures
+## Main-text and supplemental figures
 
-To regenerate the main-text results and figures, run the scripts in this order:
+To regenerate the main-text and supplement (except Figure S.2) results and figures, run the scripts in this order:
 
 ```matlab
 generate_data
